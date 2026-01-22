@@ -18,10 +18,10 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
               step.status === 'completed'
                 ? 'bg-green-500 text-white'
                 : step.status === 'active'
-                ? 'bg-blue-500 text-white'
+                ? 'bg-sage-500 text-white'
                 : step.status === 'error'
                 ? 'bg-red-500 text-white'
-                : 'bg-gray-700 text-gray-400'
+                : 'bg-dh-700 text-dh-300'
             }`}
           >
             {step.status === 'completed' ? (
@@ -71,10 +71,10 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
               step.status === 'completed'
                 ? 'text-green-400'
                 : step.status === 'active'
-                ? 'text-blue-400'
+                ? 'text-sage-400'
                 : step.status === 'error'
                 ? 'text-red-400'
-                : 'text-gray-500'
+                : 'text-dh-400'
             }`}
           >
             {step.label}

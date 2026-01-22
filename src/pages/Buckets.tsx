@@ -161,8 +161,8 @@ export function Buckets() {
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
-        <p className="text-gray-400">Please connect your wallet and authenticate on the Dashboard first.</p>
-        <a href="/" className="mt-4 inline-block text-blue-400 hover:text-blue-300">
+        <p className="text-dh-300">Please connect your wallet and authenticate on the Dashboard first.</p>
+        <a href="/" className="mt-4 inline-block text-sage-400 hover:text-sage-300">
           Go to Dashboard
         </a>
       </div>
@@ -173,7 +173,7 @@ export function Buckets() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Buckets</h1>
-        <p className="mt-1 text-gray-400">Create and manage your storage buckets.</p>
+        <p className="mt-1 text-dh-300">Create and manage your storage buckets.</p>
       </div>
 
       {/* Error Alert */}
@@ -188,7 +188,7 @@ export function Buckets() {
         <Card title="Create Bucket" className="lg:col-span-1">
           <form onSubmit={handleCreateBucket} className="space-y-4">
             <div>
-              <label htmlFor="bucketName" className="block text-sm font-medium text-gray-300 mb-1">
+              <label htmlFor="bucketName" className="block text-sm font-medium text-dh-200 mb-1">
                 Bucket Name
               </label>
               <input
@@ -197,7 +197,7 @@ export function Buckets() {
                 value={bucketName}
                 onChange={(e) => setBucketName(e.target.value)}
                 placeholder="my-bucket"
-                className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-dh-900 border border-dh-700 rounded-lg text-white placeholder-dh-400 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
                 disabled={
                   createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error'
                 }
@@ -205,7 +205,7 @@ export function Buckets() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Privacy</label>
+              <label className="block text-sm font-medium text-dh-200 mb-2">Privacy</label>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -215,8 +215,8 @@ export function Buckets() {
                   }
                   className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
                     !isPrivate
-                      ? 'bg-blue-600 border-blue-600 text-white'
-                      : 'bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-600'
+                      ? 'bg-sage-600 border-sage-600 text-white'
+                      : 'bg-dh-900 border-dh-700 text-dh-300 hover:border-dh-600'
                   }`}
                 >
                   Public
@@ -229,8 +229,8 @@ export function Buckets() {
                   }
                   className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
                     isPrivate
-                      ? 'bg-blue-600 border-blue-600 text-white'
-                      : 'bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-600'
+                      ? 'bg-sage-600 border-sage-600 text-white'
+                      : 'bg-dh-900 border-dh-700 text-dh-300 hover:border-dh-600'
                   }`}
                 >
                   Private
@@ -270,37 +270,37 @@ export function Buckets() {
             </div>
 
             {isLoadingBuckets ? (
-              <div className="text-center py-8 text-gray-400">Loading buckets...</div>
+              <div className="text-center py-8 text-dh-300">Loading buckets...</div>
             ) : buckets.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-dh-300">
                 No buckets found. Create your first bucket to get started.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Name</th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Bucket ID</th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Actions</th>
+                    <tr className="border-b border-dh-700">
+                      <th className="text-left py-3 px-4 text-sm font-medium text-dh-300">Name</th>
+                      <th className="text-left py-3 px-4 text-sm font-medium text-dh-300">Bucket ID</th>
+                      <th className="text-right py-3 px-4 text-sm font-medium text-dh-300">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {buckets.map((bucket) => (
                       <tr
                         key={bucket.bucketId}
-                        className={`border-b border-gray-700/50 hover:bg-gray-700/30 ${
-                          selectedBucketId === bucket.bucketId ? 'bg-gray-700/50' : ''
+                        className={`border-b border-dh-700/50 hover:bg-dh-700/30 ${
+                          selectedBucketId === bucket.bucketId ? 'bg-dh-700/50' : ''
                         }`}
                       >
                         <td className="py-3 px-4 text-sm text-white">{bucket.name || 'Unnamed'}</td>
-                        <td className="py-3 px-4 text-sm font-mono text-gray-300">{truncateHash(bucket.bucketId)}</td>
+                        <td className="py-3 px-4 text-sm font-mono text-dh-200">{truncateHash(bucket.bucketId)}</td>
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => handleViewBucket(bucket.bucketId)}
                               disabled={isLoadingBucketInfo && selectedBucketId === bucket.bucketId}
-                              className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              className="p-2 rounded-lg text-dh-300 hover:text-sage-400 hover:bg-dh-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               title="View"
                             >
                               <EyeIcon />
@@ -308,7 +308,7 @@ export function Buckets() {
                             <button
                               onClick={() => handleDeleteBucket(bucket.bucketId)}
                               disabled={isDeleting === bucket.bucketId}
-                              className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              className="p-2 rounded-lg text-dh-300 hover:text-red-400 hover:bg-dh-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               title="Delete"
                             >
                               <TrashIcon />
@@ -337,17 +337,17 @@ export function Buckets() {
           }}
         >
           <div
-            className="bg-gray-800 border border-gray-700 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-dh-800 border border-dh-700 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-700">
+            <div className="flex items-center justify-between p-4 border-b border-dh-700">
               <h3 className="text-lg font-semibold text-white">Bucket Details</h3>
               <button
                 onClick={() => {
                   setSelectedBucket(null);
                   setSelectedBucketId(null);
                 }}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-dh-300 hover:text-white transition-colors"
                 disabled={isLoadingBucketInfo}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,38 +357,38 @@ export function Buckets() {
             </div>
             <div className="p-4">
               {isLoadingBucketInfo ? (
-                <div className="text-center py-8 text-gray-400">Loading bucket details...</div>
+                <div className="text-center py-8 text-dh-300">Loading bucket details...</div>
               ) : selectedBucket ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <p className="text-xs text-gray-500 mb-1">Bucket ID</p>
-                    <p className="text-sm font-mono text-gray-300 break-all">{selectedBucketId}</p>
+                  <div className="bg-dh-900 rounded-lg p-4">
+                    <p className="text-xs text-dh-400 mb-1">Bucket ID</p>
+                    <p className="text-sm font-mono text-dh-200 break-all">{selectedBucketId}</p>
                   </div>
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <p className="text-xs text-gray-500 mb-1">Owner (User ID)</p>
-                    <p className="text-sm font-mono text-gray-300 break-all">{selectedBucket.userId}</p>
+                  <div className="bg-dh-900 rounded-lg p-4">
+                    <p className="text-xs text-dh-400 mb-1">Owner (User ID)</p>
+                    <p className="text-sm font-mono text-dh-200 break-all">{selectedBucket.userId}</p>
                   </div>
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <p className="text-xs text-gray-500 mb-1">MSP ID</p>
-                    <p className="text-sm font-mono text-gray-300 break-all">{selectedBucket.mspId}</p>
+                  <div className="bg-dh-900 rounded-lg p-4">
+                    <p className="text-xs text-dh-400 mb-1">MSP ID</p>
+                    <p className="text-sm font-mono text-dh-200 break-all">{selectedBucket.mspId}</p>
                   </div>
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <p className="text-xs text-gray-500 mb-1">Privacy</p>
+                  <div className="bg-dh-900 rounded-lg p-4">
+                    <p className="text-xs text-dh-400 mb-1">Privacy</p>
                     <StatusBadge
                       status={selectedBucket.private ? 'pending' : 'healthy'}
                       label={selectedBucket.private ? 'Private' : 'Public'}
                     />
                   </div>
                   {selectedBucket.root && (
-                    <div className="bg-gray-900 rounded-lg p-4">
-                      <p className="text-xs text-gray-500 mb-1">Root Hash</p>
-                      <p className="text-sm font-mono text-gray-300 break-all">{selectedBucket.root}</p>
+                    <div className="bg-dh-900 rounded-lg p-4">
+                      <p className="text-xs text-dh-400 mb-1">Root Hash</p>
+                      <p className="text-sm font-mono text-dh-200 break-all">{selectedBucket.root}</p>
                     </div>
                   )}
                   {selectedBucket.valuePropositionId && (
-                    <div className="bg-gray-900 rounded-lg p-4">
-                      <p className="text-xs text-gray-500 mb-1">Value Proposition ID</p>
-                      <p className="text-sm font-mono text-gray-300 break-all">{selectedBucket.valuePropositionId}</p>
+                    <div className="bg-dh-900 rounded-lg p-4">
+                      <p className="text-xs text-dh-400 mb-1">Value Proposition ID</p>
+                      <p className="text-sm font-mono text-dh-200 break-all">{selectedBucket.valuePropositionId}</p>
                     </div>
                   )}
                 </div>

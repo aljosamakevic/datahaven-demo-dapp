@@ -51,7 +51,7 @@ export function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="mt-1 text-gray-400">Connect your wallet, storage provider, and authenticate to get started.</p>
+        <p className="mt-1 text-dh-300">Connect your wallet, storage provider, and authenticate to get started.</p>
       </div>
 
       {/* Error Alert */}
@@ -85,14 +85,14 @@ export function Dashboard() {
         <Card title="1. Connect Wallet">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Status</span>
+              <span className="text-sm text-dh-300">Status</span>
               <StatusBadge status={isWalletConnected ? 'connected' : 'disconnected'} />
             </div>
 
             {isWalletConnected && address && (
-              <div className="bg-gray-900 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">Connected Address</p>
-                <p className="text-sm font-mono text-gray-300 break-all">{address}</p>
+              <div className="bg-dh-900 rounded-lg p-3">
+                <p className="text-xs text-dh-400 mb-1">Connected Address</p>
+                <p className="text-sm font-mono text-dh-200 break-all">{address}</p>
               </div>
             )}
 
@@ -111,13 +111,13 @@ export function Dashboard() {
         <Card title="2. Connect to Storage Provider">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Status</span>
+              <span className="text-sm text-dh-300">Status</span>
               <StatusBadge status={isMspConnected ? 'connected' : 'disconnected'} />
             </div>
 
             {healthStatus && (
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Health</span>
+                <span className="text-sm text-dh-300">Health</span>
                 <StatusBadge
                   status={healthStatus.status === 'healthy' ? 'healthy' : 'unhealthy'}
                   label={healthStatus.status}
@@ -126,15 +126,15 @@ export function Dashboard() {
             )}
 
             {mspInfo && (
-              <div className="bg-gray-900 rounded-lg p-3 space-y-2">
+              <div className="bg-dh-900 rounded-lg p-3 space-y-2">
                 <div>
-                  <p className="text-xs text-gray-500">MSP ID</p>
-                  <p className="text-sm font-mono text-gray-300">{truncateHash(mspInfo.mspId)}</p>
+                  <p className="text-xs text-dh-400">MSP ID</p>
+                  <p className="text-sm font-mono text-dh-200">{truncateHash(mspInfo.mspId)}</p>
                 </div>
                 {mspInfo.version && (
                   <div>
-                    <p className="text-xs text-gray-500">Version</p>
-                    <p className="text-sm text-gray-300">{mspInfo.version}</p>
+                    <p className="text-xs text-dh-400">Version</p>
+                    <p className="text-sm text-dh-200">{mspInfo.version}</p>
                   </div>
                 )}
               </div>
@@ -155,7 +155,7 @@ export function Dashboard() {
         <Card title="3. Authenticate">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Status</span>
+              <span className="text-sm text-dh-300">Status</span>
               <StatusBadge
                 status={isAuthenticated ? 'connected' : 'disconnected'}
                 label={isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
@@ -163,13 +163,13 @@ export function Dashboard() {
             </div>
 
             {userProfile && (
-              <div className="bg-gray-900 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">User Address</p>
-                <p className="text-sm font-mono text-gray-300 break-all">{userProfile.address}</p>
+              <div className="bg-dh-900 rounded-lg p-3">
+                <p className="text-xs text-dh-400 mb-1">User Address</p>
+                <p className="text-sm font-mono text-dh-200 break-all">{userProfile.address}</p>
               </div>
             )}
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-dh-400">
               Sign a message with your wallet to authenticate with the storage provider (SIWE).
             </p>
 
@@ -189,13 +189,13 @@ export function Dashboard() {
       {isAuthenticated && (
         <Card title="Next Steps">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="/buckets" className="block p-4 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors">
+            <a href="/buckets" className="block p-4 bg-dh-900 rounded-lg hover:bg-dh-700 transition-colors">
               <h4 className="font-medium text-white mb-1">Manage Buckets</h4>
-              <p className="text-sm text-gray-400">Create, view, and delete storage buckets.</p>
+              <p className="text-sm text-dh-300">Create, view, and delete storage buckets.</p>
             </a>
-            <a href="/files" className="block p-4 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors">
+            <a href="/files" className="block p-4 bg-dh-900 rounded-lg hover:bg-dh-700 transition-colors">
               <h4 className="font-medium text-white mb-1">Manage Files</h4>
-              <p className="text-sm text-gray-400">Upload, download, and manage files in your buckets.</p>
+              <p className="text-sm text-dh-300">Upload, download, and manage files in your buckets.</p>
             </a>
           </div>
         </Card>

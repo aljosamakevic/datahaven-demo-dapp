@@ -335,8 +335,8 @@ export function Files() {
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
-        <p className="text-gray-400">Please connect your wallet and authenticate on the Dashboard first.</p>
-        <a href="/" className="mt-4 inline-block text-blue-400 hover:text-blue-300">
+        <p className="text-dh-300">Please connect your wallet and authenticate on the Dashboard first.</p>
+        <a href="/" className="mt-4 inline-block text-sage-400 hover:text-sage-300">
           Go to Dashboard
         </a>
       </div>
@@ -347,7 +347,7 @@ export function Files() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Files</h1>
-        <p className="mt-1 text-gray-400">Upload, download, and manage files in your buckets.</p>
+        <p className="mt-1 text-dh-300">Upload, download, and manage files in your buckets.</p>
       </div>
 
       {/* Error Alert */}
@@ -363,7 +363,7 @@ export function Files() {
           <select
             value={selectedBucketId}
             onChange={handleBucketChange}
-            className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 bg-dh-900 border border-dh-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sage-500"
             disabled={isLoadingBuckets}
           >
             {buckets.length === 0 ? (
@@ -387,12 +387,12 @@ export function Files() {
         <Card title="Upload File" className="lg:col-span-1">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Select File</label>
+              <label className="block text-sm font-medium text-dh-200 mb-2">Select File</label>
               <input
                 ref={fileInputRef}
                 type="file"
                 onChange={handleFileSelect}
-                className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer"
+                className="block w-full text-sm text-dh-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-sage-600 file:text-white hover:file:bg-sage-500 file:cursor-pointer"
                 disabled={
                   !selectedBucketId ||
                   (uploadProgress.step !== 'idle' && uploadProgress.step !== 'done' && uploadProgress.step !== 'error')
@@ -401,9 +401,9 @@ export function Files() {
             </div>
 
             {selectedUploadFile && (
-              <div className="bg-gray-900 rounded-lg p-3">
+              <div className="bg-dh-900 rounded-lg p-3">
                 <p className="text-sm text-white">{selectedUploadFile.name}</p>
-                <p className="text-xs text-gray-400">{formatFileSize(selectedUploadFile.size)}</p>
+                <p className="text-xs text-dh-300">{formatFileSize(selectedUploadFile.size)}</p>
               </div>
             )}
 
@@ -440,42 +440,42 @@ export function Files() {
             </div>
 
             {!selectedBucketId ? (
-              <div className="text-center py-8 text-gray-400">Select a bucket to view files.</div>
+              <div className="text-center py-8 text-dh-300">Select a bucket to view files.</div>
             ) : isLoadingFiles ? (
-              <div className="text-center py-8 text-gray-400">Loading files...</div>
+              <div className="text-center py-8 text-dh-300">Loading files...</div>
             ) : files.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">No files in this bucket. Upload your first file.</div>
+              <div className="text-center py-8 text-dh-300">No files in this bucket. Upload your first file.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Name</th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Size</th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Status</th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Actions</th>
+                    <tr className="border-b border-dh-700">
+                      <th className="text-left py-3 px-4 text-sm font-medium text-dh-300">Name</th>
+                      <th className="text-left py-3 px-4 text-sm font-medium text-dh-300">Size</th>
+                      <th className="text-left py-3 px-4 text-sm font-medium text-dh-300">Status</th>
+                      <th className="text-right py-3 px-4 text-sm font-medium text-dh-300">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {files.map((file, index) => (
                       <tr
                         key={file.fileKey || `folder-${index}`}
-                        className="border-b border-gray-700/50 hover:bg-gray-700/30"
+                        className="border-b border-dh-700/50 hover:bg-dh-700/30"
                       >
                         <td className="py-3 px-4 text-sm text-white flex items-center gap-2">
                           {file.type === 'folder' ? (
                             <FolderIcon className="w-4 h-4 text-yellow-500" />
                           ) : (
-                            <FileIcon className="w-4 h-4 text-gray-400" />
+                            <FileIcon className="w-4 h-4 text-dh-300" />
                           )}
                           {file.name || (file.fileKey ? truncateHash(file.fileKey) : 'Unknown')}
                         </td>
-                        <td className="py-3 px-4 text-sm text-gray-300">
+                        <td className="py-3 px-4 text-sm text-dh-200">
                           {file.type === 'folder' ? '-' : formatFileSize(file.size)}
                         </td>
                         <td className="py-3 px-4">
                           {file.type === 'folder' ? (
-                            <span className="text-gray-500 text-sm">Folder</span>
+                            <span className="text-dh-400 text-sm">Folder</span>
                           ) : (
                             getStatusBadge(file.status)
                           )}
@@ -486,7 +486,7 @@ export function Files() {
                               <button
                                 onClick={() => handleViewFile(file.fileKey!)}
                                 disabled={isLoadingFileInfo}
-                                className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg text-dh-300 hover:text-sage-400 hover:bg-dh-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Info"
                               >
                                 <InfoIcon />
@@ -494,7 +494,7 @@ export function Files() {
                               <button
                                 onClick={() => handleDownload(file.fileKey!, file.name)}
                                 disabled={isDownloading === file.fileKey || file.status !== 'ready'}
-                                className="p-2 rounded-lg text-gray-400 hover:text-green-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg text-dh-300 hover:text-green-400 hover:bg-dh-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Download"
                               >
                                 <DownloadIcon />
@@ -502,7 +502,7 @@ export function Files() {
                               <button
                                 onClick={() => handleDelete(file.fileKey!)}
                                 disabled={isDeleting === file.fileKey}
-                                className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg text-dh-300 hover:text-red-400 hover:bg-dh-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Delete"
                               >
                                 <TrashIcon />
@@ -524,26 +524,26 @@ export function Files() {
       {selectedFile && (
         <Card title="File Details">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-900 rounded-lg p-4">
-              <p className="text-xs text-gray-500 mb-1">File Key</p>
-              <p className="text-sm font-mono text-gray-300 break-all">{selectedFile.fileKey}</p>
+            <div className="bg-dh-900 rounded-lg p-4">
+              <p className="text-xs text-dh-400 mb-1">File Key</p>
+              <p className="text-sm font-mono text-dh-200 break-all">{selectedFile.fileKey}</p>
             </div>
-            <div className="bg-gray-900 rounded-lg p-4">
-              <p className="text-xs text-gray-500 mb-1">Location</p>
-              <p className="text-sm text-gray-300">{selectedFile.location || 'Unknown'}</p>
+            <div className="bg-dh-900 rounded-lg p-4">
+              <p className="text-xs text-dh-400 mb-1">Location</p>
+              <p className="text-sm text-dh-200">{selectedFile.location || 'Unknown'}</p>
             </div>
-            <div className="bg-gray-900 rounded-lg p-4">
-              <p className="text-xs text-gray-500 mb-1">Size</p>
-              <p className="text-sm text-gray-300">{formatFileSize(Number(selectedFile.size))}</p>
+            <div className="bg-dh-900 rounded-lg p-4">
+              <p className="text-xs text-dh-400 mb-1">Size</p>
+              <p className="text-sm text-dh-200">{formatFileSize(Number(selectedFile.size))}</p>
             </div>
-            <div className="bg-gray-900 rounded-lg p-4">
-              <p className="text-xs text-gray-500 mb-1">Bucket ID</p>
-              <p className="text-sm font-mono text-gray-300 break-all">{selectedFile.bucketId}</p>
+            <div className="bg-dh-900 rounded-lg p-4">
+              <p className="text-xs text-dh-400 mb-1">Bucket ID</p>
+              <p className="text-sm font-mono text-dh-200 break-all">{selectedFile.bucketId}</p>
             </div>
             {selectedFile.fingerprint && (
-              <div className="bg-gray-900 rounded-lg p-4 md:col-span-2">
-                <p className="text-xs text-gray-500 mb-1">Fingerprint</p>
-                <p className="text-sm font-mono text-gray-300 break-all">{selectedFile.fingerprint}</p>
+              <div className="bg-dh-900 rounded-lg p-4 md:col-span-2">
+                <p className="text-xs text-dh-400 mb-1">Fingerprint</p>
+                <p className="text-sm font-mono text-dh-200 break-all">{selectedFile.fingerprint}</p>
               </div>
             )}
           </div>

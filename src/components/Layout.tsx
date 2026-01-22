@@ -21,14 +21,14 @@ export function Layout({ children }: LayoutProps) {
   const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-dh-950 text-dh-100">
       {/* Navigation */}
-      <nav className="bg-gray-800 border-b border-gray-700">
+      <nav className="bg-dh-800 border-b border-dh-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <span className="text-xl font-bold text-blue-400">DataHaven Demo Dapp</span>
+              <span className="text-xl font-bold text-sage-400">DataHaven Demo Dapp</span>
             </div>
 
             {/* Desktop Nav Links */}
@@ -39,8 +39,8 @@ export function Layout({ children }: LayoutProps) {
                   to={item.path}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     location.pathname === item.path
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                      ? 'bg-dh-950 text-white'
+                      : 'text-dh-200 hover:bg-dh-700 hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -49,7 +49,7 @@ export function Layout({ children }: LayoutProps) {
               {isWalletConnected && address && (
                 <div className="flex items-center space-x-2 ml-4">
                   <span className={`w-2 h-2 rounded-full ${isAuthenticated ? 'bg-green-400' : 'bg-yellow-400'}`} />
-                  <span className="text-sm text-gray-300 font-mono">{truncateAddress(address)}</span>
+                  <span className="text-sm text-dh-200 font-mono">{truncateAddress(address)}</span>
                 </div>
               )}
             </div>
@@ -57,7 +57,7 @@ export function Layout({ children }: LayoutProps) {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              className="sm:hidden p-2 rounded-md text-dh-300 hover:text-white hover:bg-dh-700 transition-colors"
               aria-label="Toggle menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@ export function Layout({ children }: LayoutProps) {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="sm:hidden border-t border-gray-700">
+          <div className="sm:hidden border-t border-dh-700">
             <div className="px-4 py-3 space-y-1">
               {navItems.map((item) => (
                 <Link
@@ -82,8 +82,8 @@ export function Layout({ children }: LayoutProps) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     location.pathname === item.path
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                      ? 'bg-dh-950 text-white'
+                      : 'text-dh-200 hover:bg-dh-700 hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -92,7 +92,7 @@ export function Layout({ children }: LayoutProps) {
               {isWalletConnected && address && (
                 <div className="flex items-center space-x-2 px-3 py-2">
                   <span className={`w-2 h-2 rounded-full ${isAuthenticated ? 'bg-green-400' : 'bg-yellow-400'}`} />
-                  <span className="text-sm text-gray-300 font-mono">{truncateAddress(address)}</span>
+                  <span className="text-sm text-dh-200 font-mono">{truncateAddress(address)}</span>
                 </div>
               )}
             </div>
