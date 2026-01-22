@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { initWasm } from '@storagehub-sdk/core';
 import {
@@ -7,7 +7,7 @@ import {
   getConnectedAddress,
   initPolkadotApi,
   restoreWalletConnection,
-} from '../../utils/services/clientService';
+} from '../services/clientService';
 import {
   connectToMsp,
   getMspInfo,
@@ -16,23 +16,21 @@ import {
   disconnectMsp,
   isAuthenticated as checkAuth,
   getUserProfile,
-} from '../../utils/services/mspService';
+} from '../services/mspService';
 import type { AppState, InfoResponse, UserInfo, HealthStatus } from '../types';
 
-interface AppContextType extends AppState {
-  // Actions
+export interface AppContextType extends AppState {
   connectWallet: () => Promise<void>;
   disconnect: () => void;
   connectMsp: () => Promise<void>;
   authenticateUser: () => Promise<void>;
   getMspHealthStatus: () => Promise<HealthStatus>;
-  // Loading states
   isLoading: boolean;
   error: string | null;
   clearError: () => void;
 }
 
-const AppContext = createContext<AppContextType | null>(null);
+export const AppContext = createContext<AppContextType | null>(null);
 
 let wasmInitialized = false;
 
@@ -54,7 +52,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      // Initialize WASM if not already done
       if (!wasmInitialized) {
         await initWasm();
         wasmInitialized = true;
@@ -144,7 +141,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Restore session from storage on mount
   useEffect(() => {
     const restoreSession = async () => {
-      // Check if we have persisted state to restore
       const persistedAddress = getConnectedAddress();
       if (!persistedAddress) {
         return;
@@ -152,27 +148,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       setIsLoading(true);
       try {
-        // Initialize WASM if needed
         if (!wasmInitialized) {
           await initWasm();
           wasmInitialized = true;
         }
 
-        // Try to restore wallet connection
         const restoredAddress = await restoreWalletConnection();
         if (!restoredAddress) {
-          // Wallet no longer connected, state was cleared
           return;
         }
 
-        // Initialize Polkadot API
         await initPolkadotApi();
 
-        // Check if we have a valid session
         const isAuth = checkAuth();
         const profile = getUserProfile();
 
-        // If we have auth, reconnect to MSP
         if (isAuth) {
           await connectToMsp();
           const mspInfo: InfoResponse = await getMspInfo();
@@ -215,12 +205,4 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-}
-
-export function useAppState(): AppContextType {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useAppState must be used within an AppProvider');
-  }
-  return context;
 }

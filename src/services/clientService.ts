@@ -4,7 +4,7 @@ import { StorageHubClient } from '@storagehub-sdk/core';
 import type { EvmWriteOptions } from '@storagehub-sdk/core';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { types } from '@storagehub/types-bundle';
-import { NETWORKS } from '../../src/config/networks';
+import { NETWORKS } from '../config/networks';
 
 // Storage key
 const CONNECTED_ADDRESS_KEY = 'datahaven_connected_address';

@@ -2,7 +2,7 @@ import { MspClient } from '@storagehub-sdk/msp-client';
 import type { HealthStatus, InfoResponse, UserInfo, ValueProp } from '@storagehub-sdk/msp-client';
 import type { HttpClientConfig } from '@storagehub-sdk/core';
 import { getConnectedAddress, getWalletClient } from './clientService';
-import { NETWORKS } from '../../src/config/networks';
+import { NETWORKS } from '../config/networks';
 
 // Storage keys
 const SESSION_TOKEN_KEY = 'datahaven_session_token';

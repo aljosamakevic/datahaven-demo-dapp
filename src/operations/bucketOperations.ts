@@ -7,7 +7,7 @@ import {
   buildGasTxOpts,
 } from '../services/clientService';
 import { getMspInfo, getValueProps, getMspClient } from '../services/mspService';
-import type { BucketInfo } from '../../src/types';
+import type { BucketInfo } from '../types';
 import type { TransactionReceipt } from 'viem';
 
 // Create a new bucket

@@ -4,8 +4,8 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { StatusBadge } from '../components/StatusBadge';
 import { ProgressStepper } from '../components/ProgressStepper';
-import { getBucketsFromMSP } from '../../utils/operations/bucketOperations';
 import {
+  getBucketsFromMSP,
   uploadFile,
   waitForMSPConfirmOnChain,
   waitForBackendFileReady,
@@ -13,7 +13,8 @@ import {
   requestDeleteFile,
   getBucketFilesFromMSP,
   getFileInfo,
-} from '../../utils/operations/fileOperations';
+} from '../operations';
+import { InfoIcon, DownloadIcon, TrashIcon, FolderIcon, FileIcon } from '../components/Icons';
 import type { Bucket, FileUploadProgress } from '../types';
 import type { StorageFileInfo } from '@storagehub-sdk/msp-client';
 
@@ -72,7 +73,6 @@ export function Files() {
     setError(null);
     try {
       const response = await getBucketFilesFromMSP(selectedBucketId);
-      console.log('getBucketFilesFromMSP response:', response);
 
       // The response has a tree structure - we need to flatten it recursively
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -118,7 +118,6 @@ export function Files() {
       };
 
       const fileList = flattenTree(response.files || []);
-      console.log('Mapped fileList:', fileList);
       setFiles(fileList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load files');
@@ -465,17 +464,9 @@ export function Files() {
                       >
                         <td className="py-3 px-4 text-sm text-white flex items-center gap-2">
                           {file.type === 'folder' ? (
-                            <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                            </svg>
+                            <FolderIcon className="w-4 h-4 text-yellow-500" />
                           ) : (
-                            <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path
-                                fillRule="evenodd"
-                                d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
+                            <FileIcon className="w-4 h-4 text-gray-400" />
                           )}
                           {file.name || (file.fileKey ? truncateHash(file.fileKey) : 'Unknown')}
                         </td>
@@ -498,10 +489,7 @@ export function Files() {
                                 className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Info"
                               >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <circle cx="12" cy="12" r="10" strokeWidth="2" />
-                                  <path strokeWidth="2" strokeLinecap="round" d="M12 16v-4M12 8h.01" />
-                                </svg>
+                                <InfoIcon />
                               </button>
                               <button
                                 onClick={() => handleDownload(file.fileKey!, file.name)}
@@ -509,9 +497,7 @@ export function Files() {
                                 className="p-2 rounded-lg text-gray-400 hover:text-green-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Download"
                               >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
-                                </svg>
+                                <DownloadIcon />
                               </button>
                               <button
                                 onClick={() => handleDelete(file.fileKey!)}
@@ -519,9 +505,7 @@ export function Files() {
                                 className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 title="Delete"
                               >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" />
-                                </svg>
+                                <TrashIcon />
                               </button>
                             </div>
                           )}
