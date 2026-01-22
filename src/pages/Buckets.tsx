@@ -294,23 +294,30 @@ export function Buckets() {
                       >
                         <td className="py-3 px-4 text-sm text-white">{bucket.name || 'Unnamed'}</td>
                         <td className="py-3 px-4 text-sm font-mono text-gray-300">{truncateHash(bucket.bucketId)}</td>
-                        <td className="py-3 px-4 text-right space-x-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleViewBucket(bucket.bucketId)}
-                            isLoading={isLoadingBucketInfo && selectedBucketId === bucket.bucketId}
-                          >
-                            View
-                          </Button>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={() => handleDeleteBucket(bucket.bucketId)}
-                            isLoading={isDeleting === bucket.bucketId}
-                          >
-                            Delete
-                          </Button>
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => handleViewBucket(bucket.bucketId)}
+                              disabled={isLoadingBucketInfo && selectedBucketId === bucket.bucketId}
+                              className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              title="View"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteBucket(bucket.bucketId)}
+                              disabled={isDeleting === bucket.bucketId}
+                              className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              title="Delete"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" />
+                              </svg>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

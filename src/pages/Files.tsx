@@ -37,7 +37,6 @@ export function Files() {
   const [isLoadingFileInfo, setIsLoadingFileInfo] = useState(false);
   const [isDownloading, setIsDownloading] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  const [pendingDeletions, setPendingDeletions] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
   // File upload
@@ -140,45 +139,6 @@ export function Files() {
     }
   }, [selectedBucketId, loadFiles]);
 
-  // Poll for pending deletions until files are fully deleted
-  useEffect(() => {
-    if (pendingDeletions.size === 0 || !selectedBucketId) return;
-
-    const pollInterval = setInterval(async () => {
-      const stillPending = new Set<string>();
-
-      for (const fileKey of pendingDeletions) {
-        try {
-          const fileInfo = await getFileInfo(selectedBucketId, fileKey);
-          // File still exists with deletionInProgress status - keep polling
-          if (fileInfo.status === 'deletionInProgress') {
-            stillPending.add(fileKey);
-          }
-          // Other statuses mean deletion completed or was cancelled
-        } catch {
-          // File no longer exists (404) - deletion complete
-        }
-      }
-
-      // Update pending deletions
-      setPendingDeletions(stillPending);
-
-      // Refresh file list to show updated statuses
-      await loadFiles();
-
-      // If selected file was being deleted, refresh or clear it
-      if (selectedFile && pendingDeletions.has(selectedFile.fileKey)) {
-        try {
-          const updatedInfo = await getFileInfo(selectedBucketId, selectedFile.fileKey);
-          setSelectedFile(updatedInfo);
-        } catch {
-          setSelectedFile(null);
-        }
-      }
-    }, 3000); // Poll every 3 seconds
-
-    return () => clearInterval(pollInterval);
-  }, [pendingDeletions, selectedBucketId, loadFiles, selectedFile]);
 
   const handleBucketChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedBucketId(e.target.value);
@@ -279,25 +239,33 @@ export function Files() {
 
     setIsDeleting(fileKey);
     setError(null);
+
     try {
       await requestDeleteFile(selectedBucketId, fileKey);
 
-      // Add to pending deletions for polling
-      setPendingDeletions((prev) => new Set(prev).add(fileKey));
+      // Immediately show deletionInProgress status in the UI
+      setFiles((prev) =>
+        prev.map((f) => (f.fileKey === fileKey ? { ...f, status: 'deletionInProgress' } : f))
+      );
 
-      // Reload files to get updated statuses
-      await loadFiles();
-
-      // If this file was selected, refresh its info to show new status
-      if (selectedFile?.fileKey === fileKey) {
-        try {
-          const updatedInfo = await getFileInfo(selectedBucketId, fileKey);
-          setSelectedFile(updatedInfo);
-        } catch {
-          // File may no longer exist, clear selection
-          setSelectedFile(null);
+      // Poll until the file is gone
+      const poll = async () => {
+        for (let i = 0; i < 30; i++) {
+          await new Promise((r) => setTimeout(r, 3000));
+          try {
+            await getFileInfo(selectedBucketId, fileKey);
+            // File still exists, keep polling
+          } catch {
+            // File no longer found — remove it from the list
+            setFiles((prev) => prev.filter((f) => f.fileKey !== fileKey));
+            if (selectedFile?.fileKey === fileKey) {
+              setSelectedFile(null);
+            }
+            return;
+          }
         }
-      }
+      };
+      poll();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete file');
     } finally {
@@ -347,12 +315,7 @@ export function Files() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const getStatusBadge = (status?: string, fileKey?: string) => {
-    // Check if file is pending deletion (local state takes precedence)
-    if (fileKey && pendingDeletions.has(fileKey)) {
-      return <StatusBadge status="pending" label="Deleting..." />;
-    }
-
+  const getStatusBadge = (status?: string) => {
     switch (status) {
       case 'ready':
         return <StatusBadge status="ready" />;
@@ -523,38 +486,44 @@ export function Files() {
                           {file.type === 'folder' ? (
                             <span className="text-gray-500 text-sm">Folder</span>
                           ) : (
-                            getStatusBadge(file.status, file.fileKey)
+                            getStatusBadge(file.status)
                           )}
                         </td>
-                        <td className="py-3 px-4 text-right space-x-2">
+                        <td className="py-3 px-4 text-right">
                           {file.type === 'file' && file.fileKey && (
-                            <>
-                              <Button
-                                variant="secondary"
-                                size="sm"
+                            <div className="flex items-center justify-end gap-1">
+                              <button
                                 onClick={() => handleViewFile(file.fileKey!)}
-                                isLoading={isLoadingFileInfo}
+                                disabled={isLoadingFileInfo}
+                                className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                title="Info"
                               >
-                                Info
-                              </Button>
-                              <Button
-                                variant="primary"
-                                size="sm"
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                                  <path strokeWidth="2" strokeLinecap="round" d="M12 16v-4M12 8h.01" />
+                                </svg>
+                              </button>
+                              <button
                                 onClick={() => handleDownload(file.fileKey!, file.name)}
-                                isLoading={isDownloading === file.fileKey}
-                                disabled={file.status !== 'ready'}
+                                disabled={isDownloading === file.fileKey || file.status !== 'ready'}
+                                className="p-2 rounded-lg text-gray-400 hover:text-green-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                title="Download"
                               >
-                                Download
-                              </Button>
-                              <Button
-                                variant="danger"
-                                size="sm"
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                              </button>
+                              <button
                                 onClick={() => handleDelete(file.fileKey!)}
-                                isLoading={isDeleting === file.fileKey}
+                                disabled={isDeleting === file.fileKey}
+                                className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                title="Delete"
                               >
-                                Delete
-                              </Button>
-                            </>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" />
+                                </svg>
+                              </button>
+                            </div>
                           )}
                         </td>
                       </tr>
