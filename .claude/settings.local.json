@@ -9,7 +9,8 @@
       "Bash(pnpm build:*)",
       "Bash(grep:*)",
       "Bash(find:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

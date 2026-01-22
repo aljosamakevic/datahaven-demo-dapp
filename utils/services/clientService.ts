@@ -3,7 +3,10 @@ import type { Chain, EIP1193Provider } from 'viem';
 import { StorageHubClient } from '@storagehub-sdk/core';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { types } from '@storagehub/types-bundle';
-import { NETWORKS } from '../config/networks';
+import { NETWORKS } from '../../src/config/networks';
+
+// Storage key
+const CONNECTED_ADDRESS_KEY = 'datahaven_connected_address';
 
 // Define the chain configuration
 export const chain: Chain = defineChain({
@@ -19,6 +22,19 @@ let publicClientInstance: ReturnType<typeof createPublicClient> | null = null;
 let storageHubClientInstance: StorageHubClient | null = null;
 let polkadotApiInstance: ApiPromise | null = null;
 let connectedAddress: `0x${string}` | null = null;
+
+// Initialize address from storage
+function initFromStorage() {
+  if (typeof window === 'undefined') return;
+
+  const storedAddress = sessionStorage.getItem(CONNECTED_ADDRESS_KEY);
+  if (storedAddress) {
+    connectedAddress = storedAddress as `0x${string}`;
+  }
+}
+
+// Initialize on module load
+initFromStorage();
 
 // Get ethereum provider from window
 function getEthereumProvider(): EIP1193Provider {
@@ -44,9 +60,9 @@ export async function connectWallet(): Promise<`0x${string}`> {
   const provider = getEthereumProvider();
 
   // Request account access
-  const accounts = await provider.request({
-    method: 'eth_requestAccounts'
-  }) as string[];
+  const accounts = (await provider.request({
+    method: 'eth_requestAccounts',
+  })) as string[];
 
   if (!accounts || accounts.length === 0) {
     throw new Error('No accounts found. Please connect your wallet.');
@@ -68,6 +84,11 @@ export async function connectWallet(): Promise<`0x${string}`> {
     walletClient: walletClientInstance,
     filesystemContractAddress: '0x0000000000000000000000000000000000000404' as `0x${string}`,
   });
+
+  // Persist to session storage
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(CONNECTED_ADDRESS_KEY, connectedAddress);
+  }
 
   return connectedAddress;
 }
@@ -118,11 +139,64 @@ export function isWalletConnected() {
   return walletClientInstance !== null && connectedAddress !== null;
 }
 
+// Restore wallet connection from persisted state (call this on app init)
+export async function restoreWalletConnection(): Promise<`0x${string}` | null> {
+  // Check if we have a persisted address
+  if (!connectedAddress) {
+    return null;
+  }
+
+  try {
+    const provider = getEthereumProvider();
+
+    // Check if wallet is still connected by getting accounts (without prompting)
+    const accounts = (await provider.request({
+      method: 'eth_accounts',
+    })) as string[];
+
+    // Check if our persisted address is still among connected accounts
+    const addressLower = connectedAddress.toLowerCase();
+    const isStillConnected = accounts.some((acc) => acc.toLowerCase() === addressLower);
+
+    if (!isStillConnected) {
+      // Wallet is no longer connected, clear persisted state
+      disconnectWallet();
+      return null;
+    }
+
+    // Re-establish wallet client
+    walletClientInstance = createWalletClient({
+      chain,
+      account: connectedAddress,
+      transport: custom(provider),
+    });
+
+    // Re-create StorageHub client
+    storageHubClientInstance = new StorageHubClient({
+      rpcUrl: NETWORKS.testnet.rpcUrl,
+      chain: chain,
+      walletClient: walletClientInstance,
+      filesystemContractAddress: '0x0000000000000000000000000000000000000404' as `0x${string}`,
+    });
+
+    return connectedAddress;
+  } catch {
+    // Failed to restore, clear state
+    disconnectWallet();
+    return null;
+  }
+}
+
 // Disconnect wallet
 export function disconnectWallet() {
   walletClientInstance = null;
   storageHubClientInstance = null;
   connectedAddress = null;
+
+  // Clear session storage
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(CONNECTED_ADDRESS_KEY);
+  }
 }
 
 // Disconnect Polkadot API

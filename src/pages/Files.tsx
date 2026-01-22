@@ -4,7 +4,7 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { StatusBadge } from '../components/StatusBadge';
 import { ProgressStepper } from '../components/ProgressStepper';
-import { getBucketsFromMSP } from '../services/bucketOperations';
+import { getBucketsFromMSP } from '../../utils/operations/bucketOperations';
 import {
   uploadFile,
   waitForMSPConfirmOnChain,

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { initWasm } from '@storagehub-sdk/core';
 import {
@@ -6,7 +6,8 @@ import {
   disconnectWallet,
   getConnectedAddress,
   initPolkadotApi,
-} from '../services/clientService';
+  restoreWalletConnection,
+} from '../../utils/services/clientService';
 import {
   connectToMsp,
   getMspInfo,
@@ -15,7 +16,7 @@ import {
   disconnectMsp,
   isAuthenticated as checkAuth,
   getUserProfile,
-} from '../services/mspService';
+} from '../../utils/services/mspService';
 import type { AppState, InfoResponse, UserInfo, HealthStatus } from '../types';
 
 interface AppContextType extends AppState {
@@ -140,17 +141,66 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Sync state from services on mount (in case of page reload)
-  const address = getConnectedAddress();
-  if (address && !state.isWalletConnected) {
-    setState((prev) => ({
-      ...prev,
-      isWalletConnected: true,
-      address,
-      isAuthenticated: checkAuth(),
-      userProfile: getUserProfile(),
-    }));
-  }
+  // Restore session from storage on mount
+  useEffect(() => {
+    const restoreSession = async () => {
+      // Check if we have persisted state to restore
+      const persistedAddress = getConnectedAddress();
+      if (!persistedAddress) {
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        // Initialize WASM if needed
+        if (!wasmInitialized) {
+          await initWasm();
+          wasmInitialized = true;
+        }
+
+        // Try to restore wallet connection
+        const restoredAddress = await restoreWalletConnection();
+        if (!restoredAddress) {
+          // Wallet no longer connected, state was cleared
+          return;
+        }
+
+        // Initialize Polkadot API
+        await initPolkadotApi();
+
+        // Check if we have a valid session
+        const isAuth = checkAuth();
+        const profile = getUserProfile();
+
+        // If we have auth, reconnect to MSP
+        if (isAuth) {
+          await connectToMsp();
+          const mspInfo: InfoResponse = await getMspInfo();
+
+          setState({
+            isWalletConnected: true,
+            isMspConnected: true,
+            isAuthenticated: true,
+            address: restoredAddress,
+            mspInfo,
+            userProfile: profile,
+          });
+        } else {
+          setState((prev) => ({
+            ...prev,
+            isWalletConnected: true,
+            address: restoredAddress,
+          }));
+        }
+      } catch {
+        // Failed to restore session, start fresh
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    restoreSession();
+  }, []);
 
   const value: AppContextType = {
     ...state,

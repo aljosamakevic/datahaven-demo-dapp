@@ -2,19 +2,43 @@ import { MspClient } from '@storagehub-sdk/msp-client';
 import type { HealthStatus, InfoResponse, UserInfo, ValueProp } from '@storagehub-sdk/msp-client';
 import type { HttpClientConfig } from '@storagehub-sdk/core';
 import { getConnectedAddress, getWalletClient } from './clientService';
-import { NETWORKS } from '../config/networks';
+import { NETWORKS } from '../../src/config/networks';
+
+// Storage keys
+const SESSION_TOKEN_KEY = 'datahaven_session_token';
+const USER_PROFILE_KEY = 'datahaven_user_profile';
 
 // State
 let mspClientInstance: MspClient | null = null;
 let sessionToken: string | undefined = undefined;
 let authenticatedUserProfile: UserInfo | null = null;
 
+// Initialize state from storage
+function initFromStorage() {
+  if (typeof window === 'undefined') return;
+
+  const storedToken = sessionStorage.getItem(SESSION_TOKEN_KEY);
+  const storedProfile = sessionStorage.getItem(USER_PROFILE_KEY);
+
+  if (storedToken) {
+    sessionToken = storedToken;
+  }
+  if (storedProfile) {
+    try {
+      authenticatedUserProfile = JSON.parse(storedProfile);
+    } catch {
+      // Invalid stored profile, ignore
+    }
+  }
+}
+
+// Initialize on module load
+initFromStorage();
+
 // Session provider for authenticated requests
 const sessionProvider = async () => {
   const address = getConnectedAddress();
-  return sessionToken && address
-    ? ({ token: sessionToken, user: { address } } as const)
-    : undefined;
+  return sessionToken && address ? ({ token: sessionToken, user: { address } } as const) : undefined;
 };
 
 // Connect to MSP
@@ -70,6 +94,13 @@ export async function authenticateUser(): Promise<UserInfo> {
 
   const profile: UserInfo = await client.auth.getProfile();
   authenticatedUserProfile = profile;
+
+  // Persist to session storage
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
+    sessionStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+  }
+
   return profile;
 }
 
@@ -102,4 +133,10 @@ export function disconnectMsp() {
   mspClientInstance = null;
   sessionToken = undefined;
   authenticatedUserProfile = null;
+
+  // Clear session storage
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(SESSION_TOKEN_KEY);
+    sessionStorage.removeItem(USER_PROFILE_KEY);
+  }
 }

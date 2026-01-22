@@ -10,7 +10,7 @@ import {
   waitForBackendBucketReady,
   deleteBucket,
   getBucketsFromMSP,
-} from '../services/bucketOperations';
+} from '../../utils/operations/bucketOperations';
 import type { Bucket, BucketInfo, BucketCreationProgress } from '../types';
 
 export function Buckets() {
@@ -146,10 +146,10 @@ export function Buckets() {
         createProgress.step === 'error' && index === currentStep
           ? 'error'
           : index < currentStep
-          ? 'completed'
-          : index === currentStep
-          ? 'active'
-          : 'pending',
+            ? 'completed'
+            : index === currentStep
+              ? 'active'
+              : 'pending',
     })) as { label: string; status: 'pending' | 'active' | 'completed' | 'error' }[];
   };
 
@@ -159,9 +159,7 @@ export function Buckets() {
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold text-white mb-2">Authentication Required</h2>
-        <p className="text-gray-400">
-          Please connect your wallet and authenticate on the Dashboard first.
-        </p>
+        <p className="text-gray-400">Please connect your wallet and authenticate on the Dashboard first.</p>
         <a href="/" className="mt-4 inline-block text-blue-400 hover:text-blue-300">
           Go to Dashboard
         </a>
@@ -198,14 +196,21 @@ export function Buckets() {
                 onChange={(e) => setBucketName(e.target.value)}
                 placeholder="my-bucket"
                 className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error'}
+                disabled={
+                  createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error'
+                }
               />
             </div>
 
             <Button
               type="submit"
-              isLoading={createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error'}
-              disabled={!bucketName.trim() || (createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error')}
+              isLoading={
+                createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error'
+              }
+              disabled={
+                !bucketName.trim() ||
+                (createProgress.step !== 'idle' && createProgress.step !== 'done' && createProgress.step !== 'error')
+              }
               className="w-full"
             >
               Create Bucket
@@ -253,9 +258,7 @@ export function Buckets() {
                         }`}
                       >
                         <td className="py-3 px-4 text-sm text-white">{bucket.name || 'Unnamed'}</td>
-                        <td className="py-3 px-4 text-sm font-mono text-gray-300">
-                          {truncateHash(bucket.bucketId)}
-                        </td>
+                        <td className="py-3 px-4 text-sm font-mono text-gray-300">{truncateHash(bucket.bucketId)}</td>
                         <td className="py-3 px-4 text-right space-x-2">
                           <Button
                             variant="secondary"
@@ -316,9 +319,7 @@ export function Buckets() {
             {selectedBucket.valuePropositionId && (
               <div className="bg-gray-900 rounded-lg p-4">
                 <p className="text-xs text-gray-500 mb-1">Value Proposition ID</p>
-                <p className="text-sm font-mono text-gray-300 break-all">
-                  {selectedBucket.valuePropositionId}
-                </p>
+                <p className="text-sm font-mono text-gray-300 break-all">{selectedBucket.valuePropositionId}</p>
               </div>
             )}
           </div>

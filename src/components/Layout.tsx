@@ -16,8 +16,7 @@ export function Layout({ children }: LayoutProps) {
     { path: '/files', label: 'Files' },
   ];
 
-  const truncateAddress = (addr: string) =>
-    `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
@@ -28,7 +27,7 @@ export function Layout({ children }: LayoutProps) {
             {/* Logo and Nav Links */}
             <div className="flex items-center space-x-8">
               <div className="flex-shrink-0">
-                <span className="text-xl font-bold text-blue-400">StorageHub Demo</span>
+                <span className="text-xl font-bold text-blue-400">DataHaven Demo Dapp</span>
               </div>
               <div className="flex space-x-4">
                 {navItems.map((item) => (
@@ -51,14 +50,8 @@ export function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-4">
               {isWalletConnected && address && (
                 <div className="flex items-center space-x-2">
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      isAuthenticated ? 'bg-green-400' : 'bg-yellow-400'
-                    }`}
-                  />
-                  <span className="text-sm text-gray-300 font-mono">
-                    {truncateAddress(address)}
-                  </span>
+                  <span className={`w-2 h-2 rounded-full ${isAuthenticated ? 'bg-green-400' : 'bg-yellow-400'}`} />
+                  <span className="text-sm text-gray-300 font-mono">{truncateAddress(address)}</span>
                 </div>
               )}
             </div>

@@ -1,12 +1,7 @@
 import type { Bucket } from '@storagehub-sdk/msp-client';
-import {
-  getStorageHubClient,
-  getConnectedAddress,
-  getPublicClient,
-  getPolkadotApi,
-} from './clientService';
-import { getMspInfo, getValueProps, getMspClient } from './mspService';
-import type { BucketInfo } from '../types';
+import { getStorageHubClient, getConnectedAddress, getPublicClient, getPolkadotApi } from '../services/clientService';
+import { getMspInfo, getValueProps, getMspClient } from '../services/mspService';
+import type { BucketInfo } from '../../src/types';
 
 // Create a new bucket
 export async function createBucket(bucketName: string): Promise<{ bucketId: string; txReceipt: unknown }> {
@@ -114,9 +109,7 @@ export async function deleteBucket(bucketId: string): Promise<boolean> {
   const storageHubClient = getStorageHubClient();
   const publicClient = getPublicClient();
 
-  const txHash: `0x${string}` | undefined = await storageHubClient.deleteBucket(
-    bucketId as `0x${string}`
-  );
+  const txHash: `0x${string}` | undefined = await storageHubClient.deleteBucket(bucketId as `0x${string}`);
 
   if (!txHash) {
     throw new Error('deleteBucket() did not return a transaction hash');
