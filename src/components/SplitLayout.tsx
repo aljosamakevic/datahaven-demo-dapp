@@ -54,7 +54,7 @@ export function SplitLayout({
               onSnippetSelect={handleSnippetSelect}
             />
           </div>
-          <div className="space-y-6">{children}</div>
+          <div className="space-y-6 split-content">{children}</div>
         </div>
       ) : (
         <>{children}</>

@@ -40,3 +40,12 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Force single-column grids inside the split-view content pane */
+.split-content .grid {
+  grid-template-columns: 1fr !important;
+}
+.split-content .lg\:col-span-1,
+.split-content .lg\:col-span-2 {
+  grid-column: span 1 !important;
+}

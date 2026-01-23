@@ -3,8 +3,9 @@ import { useState, useCallback } from 'react';
 const STORAGE_KEY = 'datahaven_code_panel_open';
 
 function getInitialState(): boolean {
-  if (typeof window === 'undefined') return false;
-  return localStorage.getItem(STORAGE_KEY) === 'true';
+  if (typeof window === 'undefined') return true;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored === null ? true : stored === 'true';
 }
 
 export function useCodePanel(defaultSnippetId: string) {
