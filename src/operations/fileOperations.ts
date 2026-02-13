@@ -12,6 +12,7 @@ import {
   buildGasTxOpts,
 } from '../services/clientService';
 import { getMspClient, getMspInfo, authenticateUser, isAuthenticated } from '../services/mspService';
+import type { PalletFileSystemStorageRequestMetadata } from '@polkadot/types/lookup';
 
 // Upload a file
 export async function uploadFile(bucketId: string, file: File): Promise<{ fileKey: string; uploadReceipt: unknown }> {
@@ -123,28 +124,33 @@ export async function uploadFile(bucketId: string, file: File): Promise<{ fileKe
 // Wait for MSP to confirm on chain
 export async function waitForMSPConfirmOnChain(fileKey: string): Promise<void> {
   const polkadotApi = getPolkadotApi();
-  const maxAttempts = 10;
+  const maxAttempts = 20;
   const delayMs = 2000;
 
   for (let i = 0; i < maxAttempts; i++) {
-    const req = await polkadotApi.query.fileSystem.storageRequests(fileKey);
+    console.log(
+      `Check if storage request has been confirmed by the MSP on-chain, attempt ${i + 1} of ${maxAttempts}...`
+    );
 
+    const req = await polkadotApi.query.fileSystem.storageRequests(fileKey);
     if (req.isNone) {
       throw new Error(`StorageRequest for ${fileKey} no longer exists on-chain.`);
     }
+    const data: PalletFileSystemStorageRequestMetadata = req.unwrap();
+    // console.log('Storage request data:', data.toHuman());
+    // MSP confirmation
+    const mspStatus = data.mspStatus;
+    console.log(`MSP confirmation status: ${mspStatus.type}`);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = req.unwrap() as any;
-    const mspTuple = data.msp?.isSome ? data.msp.unwrap() : null;
-    const mspConfirmed = mspTuple ? mspTuple[1]?.isTrue : false;
+    const mspConfirmed = mspStatus.isAcceptedNewFile || mspStatus.isAcceptedExistingFile;
 
     if (mspConfirmed) {
+      console.log('Storage request confirmed by MSP on-chain');
       return;
     }
 
     await new Promise((r) => setTimeout(r, delayMs));
   }
-
   throw new Error(`FileKey ${fileKey} not confirmed by MSP after waiting`);
 }
 
