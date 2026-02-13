@@ -128,24 +128,17 @@ export async function waitForMSPConfirmOnChain(fileKey: string): Promise<void> {
   const delayMs = 2000;
 
   for (let i = 0; i < maxAttempts; i++) {
-    console.log(
-      `Check if storage request has been confirmed by the MSP on-chain, attempt ${i + 1} of ${maxAttempts}...`
-    );
-
     const req = await polkadotApi.query.fileSystem.storageRequests(fileKey);
     if (req.isNone) {
       throw new Error(`StorageRequest for ${fileKey} no longer exists on-chain.`);
     }
     const data: PalletFileSystemStorageRequestMetadata = req.unwrap();
-    // console.log('Storage request data:', data.toHuman());
     // MSP confirmation
     const mspStatus = data.mspStatus;
-    console.log(`MSP confirmation status: ${mspStatus.type}`);
 
     const mspConfirmed = mspStatus.isAcceptedNewFile || mspStatus.isAcceptedExistingFile;
 
     if (mspConfirmed) {
-      console.log('Storage request confirmed by MSP on-chain');
       return;
     }
 
