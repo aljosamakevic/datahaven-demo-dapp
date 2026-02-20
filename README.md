@@ -2,7 +2,7 @@
 
 A demo dApp for interacting with DataHaven through the StorageHub SDK. This implementation showcases connecting to wallet, connecting and authenticating with a Storage Provider, bucket management, and file operations.
 
-A build of this demo is currently available at: https://datahavendemodapp.netlify.app/
+A build of this demo is currently available at: https://demosdk.datahaven.xyz/
 
 ## Features
 
